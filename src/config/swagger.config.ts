@@ -8,6 +8,15 @@ export function setupSwagger(app: INestApplication) {
     .setTitle('Media Clone API')
     .setDescription('API documentation for Media Clone')
     .setVersion(configService.get<string>('DEFAULT_API_VERSION') || '1')
+    .addGlobalParameters({
+      name: 'Accept-Language',
+      in: 'header',
+      required: false,
+      schema: {
+        type: 'string',
+        default: 'vi',
+      },
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -19,8 +19,4 @@ export class IsEmailUnique implements ValidatorConstraintInterface {
     const user = await this.userRepository.findOne({ where: { email } });
     return !user;
   }
-
-  defaultMessage(): string {
-    return 'Email already exists';
-  }
 }
