@@ -3,8 +3,8 @@ import { AppModule } from './app.module';
 import { VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { setupSwagger } from './config/swagger.config';
-import { ValidationPipe } from '@nestjs/common';
 import { useContainer } from 'class-validator';
+import { I18nValidationPipe, I18nValidationExceptionFilter } from 'nestjs-i18n';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,11 +17,20 @@ async function bootstrap() {
   });
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  // Configure I18n Validation
   app.useGlobalPipes(
-    new ValidationPipe({
+    new I18nValidationPipe({
       transform: true,
       whitelist: true,
-      forbidNonWhitelisted: true,
+      stopAtFirstError: true,
+    }),
+  );
+
+  // Return message neatly
+  app.useGlobalFilters(
+    new I18nValidationExceptionFilter({
+      detailedErrors: false,
     }),
   );
 

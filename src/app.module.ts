@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
 import typeormConfig from './config/database.config';
 import { UsersModule } from './users/users.module';
+import { i18nConfig } from './config/i18n.config';
+import { I18nModule } from 'nestjs-i18n';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { UsersModule } from './users/users.module';
       useFactory: async (configService: ConfigService) =>
         configService.get<DataSourceOptions>('typeorm') as DataSourceOptions,
     }),
+    I18nModule.forRoot(i18nConfig),
     UsersModule,
   ],
   controllers: [AppController],
