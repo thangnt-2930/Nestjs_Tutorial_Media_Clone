@@ -1,7 +1,10 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { I18nService } from 'nestjs-i18n';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -14,5 +17,13 @@ export class UsersController {
   async create(@Body() createUserDto: CreateUserDto) {
     await this.usersService.create(createUserDto);
     return this.i18n.t('user.created');
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user' })
+  async getCurrentUser(@Req() req: any) {
+    return req.user;
   }
 }
