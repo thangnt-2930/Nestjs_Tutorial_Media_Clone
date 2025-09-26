@@ -8,6 +8,7 @@ import typeormConfig from './config/database.config';
 import { UsersModule } from './users/users.module';
 import { i18nConfig } from './config/i18n.config';
 import { I18nModule } from 'nestjs-i18n';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { I18nModule } from 'nestjs-i18n';
     }),
     I18nModule.forRoot(i18nConfig),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
