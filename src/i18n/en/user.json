@@ -15,6 +15,9 @@
 		"password_confirmation_mismatch": "Password confirmation does not match password",
 		"name_required": "Name is required",
 		"name_min": "Name must be at least {{value}} characters",
-		"name_max": "Name must be at most {{value}} characters"
+		"name_max": "Name must be at most {{value}} characters",
+		"name_exists": "Name already exists",
+		"bio_required": "Bio is required",
+		"image_required": "Image is required"
 	}
 }

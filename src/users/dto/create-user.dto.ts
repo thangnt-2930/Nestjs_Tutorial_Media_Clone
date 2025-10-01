@@ -6,7 +6,7 @@ import {
   Validate,
   MaxLength,
 } from 'class-validator';
-import { IsEmailUnique } from '../validators/is-email-unique.validator';
+import { UniqueValidator } from '../validators/unique.validator';
 import { VALIDATION } from '../user.constant';
 import { MatchTargetDecorator } from '../validators/match-target-data.validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
@@ -19,7 +19,7 @@ export class CreateUserDto {
   @IsNotEmpty({
     message: i18nValidationMessage('user.validation.email_required'),
   })
-  @Validate(IsEmailUnique, {
+  @Validate(UniqueValidator, ['email'], {
     message: i18nValidationMessage('user.validation.email_exists'),
   })
   @MinLength(VALIDATION.EMAIL.MIN, {
@@ -71,6 +71,21 @@ export class CreateUserDto {
   @MaxLength(VALIDATION.NAME.MAX, {
     message: i18nValidationMessage('user.validation.name_max'),
   })
+  @Validate(UniqueValidator, ['name'], {
+    message: i18nValidationMessage('user.validation.name_exists'),
+  })
   @ApiProperty({ example: 'Test User' })
   name: string;
+
+  @ApiProperty({ example: 'Bio 123' })
+  @IsNotEmpty({
+    message: i18nValidationMessage('user.validation.bio_required'),
+  })
+  bio: string;
+
+  @ApiProperty({ example: 'image 123' })
+  @IsNotEmpty({
+    message: i18nValidationMessage('user.validation.image_required'),
+  })
+  image: string;
 }
