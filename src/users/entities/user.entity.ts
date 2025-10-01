@@ -4,7 +4,7 @@ import { VALIDATION } from '../user.constant';
 import { BaseEntity } from '../../shared/base.entity';
 
 @Entity('users')
-@Unique(['email'])
+@Unique(['email', 'name'])
 export class User extends BaseEntity {
   @Column({ length: VALIDATION.NAME.MAX_ENTITY })
   name: string;
@@ -14,4 +14,10 @@ export class User extends BaseEntity {
 
   @Column({ length: VALIDATION.PASSWORD.MAX_ENTITY })
   password: string;
+
+  @Column({ nullable: true })
+  bio: string;
+
+  @Column({ nullable: true })
+  image: string;
 }

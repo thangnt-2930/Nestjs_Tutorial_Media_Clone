@@ -15,6 +15,9 @@
 		"password_confirmation_mismatch": "Xác nhận mật khẩu không khớp với mật khẩu",
 		"name_required": "Tên là bắt buộc",
 		"name_min": "Tên phải có ít nhất {{value}} ký tự",
-		"name_max": "Tên phải có nhiều nhất {{value}} ký tự"
+		"name_max": "Tên phải có nhiều nhất {{value}} ký tự",
+		"name_exists": "Tên đã tồn tại",
+		"bio_required": "Tiểu sử là bắt buộc",
+		"image_required": "Hình ảnh là bắt buộc"
 	}
 }

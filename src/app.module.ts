@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { i18nConfig } from './config/i18n.config';
 import { I18nModule } from 'nestjs-i18n';
 import { AuthModule } from './auth/auth.module';
+import { ProfilesModule } from './profiles/profiles.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     I18nModule.forRoot(i18nConfig),
     UsersModule,
     AuthModule,
+    ProfilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
