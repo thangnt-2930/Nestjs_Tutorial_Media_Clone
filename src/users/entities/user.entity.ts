@@ -1,7 +1,14 @@
 import { MAX } from 'class-validator';
-import { Entity, Column, Unique } from 'typeorm';
+import {
+  Entity,
+  Column,
+  Unique,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { VALIDATION } from '../user.constant';
 import { BaseEntity } from '../../shared/base.entity';
+import { Follow } from '../../follows/entities/follows.entity';
 
 @Entity('users')
 @Unique(['email', 'name'])
@@ -20,4 +27,10 @@ export class User extends BaseEntity {
 
   @Column({ nullable: true })
   image: string;
+
+  @OneToMany(() => Follow, (follow) => follow.follower)
+  following: Follow[];
+
+  @OneToMany(() => Follow, (follow) => follow.following)
+  followers: Follow[];
 }
