@@ -11,6 +11,7 @@ describe('ProfilesController', () => {
   const mockProfilesService = {
     getProfile: jest.fn(),
     followUser: jest.fn(),
+    unfollowUser: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -81,6 +82,48 @@ describe('ProfilesController', () => {
       await expect(controller.followUser('targetUser', userId)).rejects.toThrow(
         'You cannot follow yourself',
       );
+    });
+  });
+
+  describe('unfollowUser', () => {
+    const userId = 1;
+    it('should unfollow user and return following info', async () => {
+      const name = 'targetUser';
+      const unfollowResult = {
+        following: false,
+        profile: { name: 'targetUser', bio: 'bio', image: 'img' },
+      };
+      mockProfilesService.unfollowUser = jest
+        .fn()
+        .mockResolvedValue(unfollowResult);
+
+      const result = await controller.unfollowUser(name, userId);
+
+      expect(result).toEqual(unfollowResult);
+      expect(mockProfilesService.unfollowUser).toHaveBeenCalledWith(
+        userId,
+        name,
+      );
+    });
+
+    it('should throw if service throws (user not found)', async () => {
+      mockProfilesService.unfollowUser = jest
+        .fn()
+        .mockRejectedValue(new Error('User not found'));
+
+      await expect(controller.unfollowUser('notfound', userId)).rejects.toThrow(
+        'User not found',
+      );
+    });
+
+    it('should throw if service throws (bad request)', async () => {
+      mockProfilesService.unfollowUser = jest
+        .fn()
+        .mockRejectedValue(new Error('You cannot unfollow yourself'));
+
+      await expect(
+        controller.unfollowUser('targetUser', userId),
+      ).rejects.toThrow('You cannot unfollow yourself');
     });
   });
 });
