@@ -23,10 +23,14 @@ export class CreateUserDto {
     message: i18nValidationMessage('user.validation.email_exists'),
   })
   @MinLength(VALIDATION.EMAIL.MIN, {
-    message: i18nValidationMessage('user.validation.email_min'),
+    message: i18nValidationMessage('user.validation.email_min', {
+      value: VALIDATION.EMAIL.MIN,
+    }),
   })
   @MaxLength(VALIDATION.EMAIL.MAX, {
-    message: i18nValidationMessage('user.validation.email_max'),
+    message: i18nValidationMessage('user.validation.email_max', {
+      value: VALIDATION.EMAIL.MAX,
+    }),
   })
   @ApiProperty({ example: 'testuser@example.com' })
   email: string;
@@ -35,10 +39,14 @@ export class CreateUserDto {
     message: i18nValidationMessage('user.validation.password_required'),
   })
   @MinLength(VALIDATION.PASSWORD.MIN, {
-    message: i18nValidationMessage('user.validation.password_min'),
+    message: i18nValidationMessage('user.validation.password_min', {
+      value: VALIDATION.PASSWORD.MIN,
+    }),
   })
   @MaxLength(VALIDATION.PASSWORD.MAX, {
-    message: i18nValidationMessage('user.validation.password_max'),
+    message: i18nValidationMessage('user.validation.password_max', {
+      value: VALIDATION.PASSWORD.MAX,
+    }),
   })
   @ApiProperty({ example: 'password123' })
   password: string;
@@ -49,10 +57,16 @@ export class CreateUserDto {
     ),
   })
   @MinLength(VALIDATION.PASSWORD.MIN, {
-    message: i18nValidationMessage('user.validation.password_confirmation_min'),
+    message: i18nValidationMessage(
+      'user.validation.password_confirmation_min',
+      { value: VALIDATION.PASSWORD.MIN },
+    ),
   })
   @MaxLength(VALIDATION.PASSWORD.MAX, {
-    message: i18nValidationMessage('user.validation.password_confirmation_max'),
+    message: i18nValidationMessage(
+      'user.validation.password_confirmation_max',
+      { value: VALIDATION.PASSWORD.MAX },
+    ),
   })
   @MatchTargetDecorator('password', {
     message: i18nValidationMessage(
@@ -66,10 +80,14 @@ export class CreateUserDto {
     message: i18nValidationMessage('user.validation.name_required'),
   })
   @MinLength(VALIDATION.NAME.MIN, {
-    message: i18nValidationMessage('user.validation.name_min'),
+    message: i18nValidationMessage('user.validation.name_min', {
+      value: VALIDATION.NAME.MIN,
+    }),
   })
   @MaxLength(VALIDATION.NAME.MAX, {
-    message: i18nValidationMessage('user.validation.name_max'),
+    message: i18nValidationMessage('user.validation.name_max', {
+      value: VALIDATION.NAME.MAX,
+    }),
   })
   @Validate(UniqueValidator, ['name'], {
     message: i18nValidationMessage('user.validation.name_exists'),

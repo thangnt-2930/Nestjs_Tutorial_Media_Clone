@@ -1,0 +1,15 @@
+{
+  "created": "Article created successfully",
+	"validation": {
+		"title_required": "Title is required",
+		"title_min": "Title must be at least {value} characters",
+		"title_max": "Title must be at most {value} characters",
+		"description_required": "Description is required",
+		"description_min": "Description must be at least {value} characters",
+		"description_max": "Description must be at most {value} characters",
+		"body_required": "Body is required",
+		"body_min": "Body must be at least {value} characters",
+		"body_max": "Body must be at most {value} characters",
+		"tagList_required": "Tag list is required"
+	}
+}
