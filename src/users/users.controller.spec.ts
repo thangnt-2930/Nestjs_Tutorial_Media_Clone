@@ -39,6 +39,8 @@ describe('UsersController', () => {
         password: 'password123',
         name: 'Test User',
         passwordConfirmation: 'password123',
+        bio: '',
+        image: '',
       };
 
       const result = await controller.create(dto);

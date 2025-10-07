@@ -1,0 +1,15 @@
+{
+  "created": "Tạo bài viết thành công",
+	"validation": {
+		"title_required": "Tiêu đề là bắt buộc",
+		"title_min": "Tiêu đề phải có ít nhất {value} ký tự",
+		"title_max": "Tiêu đề phải có nhiều nhất {value} ký tự",
+		"description_required": "Mô tả là bắt buộc",
+		"description_min": "Mô tả phải có ít nhất {value} ký tự",
+		"description_max": "Mô tả phải có nhiều nhất {value} ký tự",
+		"body_required": "Nội dung là bắt buộc",
+		"body_min": "Nội dung phải có ít nhất {value} ký tự",
+		"body_max": "Nội dung phải có nhiều nhất {value} ký tự",
+		"tagList_required": "Danh sách thẻ là bắt buộc"
+	}
+}
