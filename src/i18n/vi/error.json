@@ -1,5 +1,5 @@
 {
-  "not_found": "Không tìm thấy người dùng",
+  "not_found": "Không tìm thấy bản ghi",
 	"unauthorized": "Truy cập không được phép",
   "not_follow_yourself": "Bạn không thể theo dõi chính mình",
   "already_following": "Bạn đã theo dõi {name}",

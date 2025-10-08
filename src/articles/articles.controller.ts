@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -20,5 +20,16 @@ export class ArticlesController {
     @CurrentUser('id') userId: number,
   ) {
     return await this.articlesService.create(createArticleDto, userId);
+  }
+
+  @Get(':slug')
+  @ApiOperation({ summary: 'Get single article by slug' })
+  @ApiResponse({ status: 200, description: 'Article retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Article not found' })
+  async getArticle(
+    @Param('slug') slug: string,
+    @CurrentUser('id') userId: number,
+  ) {
+    return await this.articlesService.getArticleBySlug(slug, userId);
   }
 }
