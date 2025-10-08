@@ -1,5 +1,5 @@
 {
-  "not_found": "User not found",
+  "not_found": "Record not found",
 	"unauthorized": "Unauthorized access",
   "not_follow_yourself": "You cannot follow yourself",
   "already_following": "You already follow {name}",

@@ -1,16 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { CreateArticleDto } from './dto/create.dto';
 import { Article } from './entities/article.entity';
 import slugify from 'slugify';
+import { DetailArticleResponseDto } from './dto/detail-response.dto';
+import { Follow } from '../follows/entities/follows.entity';
 
 @Injectable()
 export class ArticlesService {
   constructor(
     @InjectRepository(Article)
     private articleRepository: Repository<Article>,
+    @InjectRepository(Follow)
+    private followRepository: Repository<Follow>,
     private readonly i18n: I18nService,
   ) {}
 
@@ -31,5 +35,22 @@ export class ArticlesService {
 
     await this.articleRepository.save(article);
     return this.i18n.t('article.created');
+  }
+
+  async getArticleBySlug(slug: string, currentUserId: number) {
+    const article = await this.articleRepository.findOne({
+      where: { slug },
+      relations: ['author'],
+    });
+
+    if (!article) {
+      throw new NotFoundException(this.i18n.t('error.not_found'));
+    }
+
+    const following = await this.followRepository.exists({
+      where: { followerId: currentUserId, followingId: article.author.id },
+    });
+
+    return { article: new DetailArticleResponseDto(article, following) };
   }
 }
