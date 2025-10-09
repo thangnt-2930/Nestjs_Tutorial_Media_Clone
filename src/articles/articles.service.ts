@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { CreateArticleDto } from './dto/create.dto';
 import { Article } from './entities/article.entity';
@@ -52,5 +52,32 @@ export class ArticlesService {
     });
 
     return { article: new DetailArticleResponseDto(article, following) };
+  }
+
+  async getFeed(currentUserId: number, limit: number = 20, offset: number = 0) {
+    const follows = await this.followRepository.find({
+      where: { followerId: currentUserId },
+      select: ['followingId'],
+    });
+
+    const followingIds = follows.map((f) => f.followingId);
+    if (followingIds.length === 0) {
+      return { articles: [], articlesCount: 0 };
+    }
+
+    const [articles, count] = await this.articleRepository.findAndCount({
+      where: { author: { id: In(followingIds) } },
+      relations: ['author'],
+      order: { createdAt: 'DESC' },
+      take: limit,
+      skip: offset,
+    });
+
+    return {
+      articles: articles.map(
+        (article) => new DetailArticleResponseDto(article, true),
+      ),
+      articlesCount: count,
+    };
   }
 }
