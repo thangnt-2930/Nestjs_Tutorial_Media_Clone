@@ -12,6 +12,7 @@ describe('ArticlesController', () => {
     create: jest.fn(),
     getArticleBySlug: jest.fn(),
     getFeed: jest.fn(),
+    listArticles: jest.fn(),
   };
 
   const mockFollowRepository = {
@@ -169,8 +170,7 @@ describe('ArticlesController', () => {
       expect(result).toEqual(feedResponse);
       expect(mockArticlesService.getFeed).toHaveBeenCalledWith(
         currentUserId,
-        undefined,
-        undefined,
+        query,
       );
     });
 
@@ -206,8 +206,7 @@ describe('ArticlesController', () => {
       expect(result).toEqual(feedResponse);
       expect(mockArticlesService.getFeed).toHaveBeenCalledWith(
         currentUserId,
-        query.limit,
-        query.offset,
+        query,
       );
     });
 
@@ -225,9 +224,190 @@ describe('ArticlesController', () => {
       expect(result).toEqual(emptyFeedResponse);
       expect(mockArticlesService.getFeed).toHaveBeenCalledWith(
         currentUserId,
-        undefined,
-        undefined,
+        query,
       );
+    });
+  });
+
+  describe('listArticles', () => {
+    const mockDate = new Date('2023-01-01T00:00:00.000Z');
+
+    const mockArticlesResponse = {
+      articles: [
+        {
+          slug: 'article-1',
+          title: 'Article 1',
+          description: 'Description 1',
+          body: 'Body 1',
+          tagList: ['javascript', 'nodejs'],
+          createdAt: mockDate,
+          updatedAt: mockDate,
+          favorited: false,
+          favoritesCount: 5,
+          author: {
+            username: 'author1',
+            bio: 'Bio 1',
+            image: 'image1.jpg',
+            following: false,
+          },
+        },
+        {
+          slug: 'article-2',
+          title: 'Article 2',
+          description: 'Description 2',
+          body: 'Body 2',
+          tagList: ['react', 'frontend'],
+          createdAt: mockDate,
+          updatedAt: mockDate,
+          favorited: true,
+          favoritesCount: 10,
+          author: {
+            username: 'author2',
+            bio: 'Bio 2',
+            image: 'image2.jpg',
+            following: true,
+          },
+        },
+      ],
+      articlesCount: 2,
+    };
+
+    it('should return all articles with default parameters', async () => {
+      mockArticlesService.listArticles.mockResolvedValue(mockArticlesResponse);
+
+      const query = {};
+      const result = await controller.listArticles(query);
+
+      expect(result).toEqual(mockArticlesResponse);
+      expect(mockArticlesService.listArticles).toHaveBeenCalledWith(query);
+      expect(result.articles).toHaveLength(2);
+      expect(result.articlesCount).toBe(2);
+    });
+
+    it('should return articles with pagination', async () => {
+      const paginatedResponse = {
+        articles: [mockArticlesResponse.articles[0]],
+        articlesCount: 1,
+      };
+
+      mockArticlesService.listArticles.mockResolvedValue(paginatedResponse);
+
+      const query = { limit: 1, offset: 0 };
+      const result = await controller.listArticles(query);
+
+      expect(result).toEqual(paginatedResponse);
+      expect(mockArticlesService.listArticles).toHaveBeenCalledWith(query);
+      expect(result.articles).toHaveLength(1);
+      expect(result.articlesCount).toBe(1);
+    });
+
+    it('should return articles filtered by tag', async () => {
+      const tagFilteredResponse = {
+        articles: [mockArticlesResponse.articles[0]],
+        articlesCount: 1,
+      };
+
+      mockArticlesService.listArticles.mockResolvedValue(tagFilteredResponse);
+
+      const query = { tag: 'javascript' };
+      const result = await controller.listArticles(query);
+
+      expect(result).toEqual(tagFilteredResponse);
+      expect(mockArticlesService.listArticles).toHaveBeenCalledWith(query);
+      expect(result.articles[0].tagList).toContain('javascript');
+    });
+
+    it('should return articles filtered by author', async () => {
+      const authorFilteredResponse = {
+        articles: [mockArticlesResponse.articles[0]],
+        articlesCount: 1,
+      };
+
+      mockArticlesService.listArticles.mockResolvedValue(
+        authorFilteredResponse,
+      );
+
+      const query = { author: 'author1' };
+      const result = await controller.listArticles(query);
+
+      expect(result).toEqual(authorFilteredResponse);
+      expect(mockArticlesService.listArticles).toHaveBeenCalledWith(query);
+      expect(result.articles[0].author.username).toBe('author1');
+    });
+
+    it('should return favorited articles when favorited=true', async () => {
+      const favoritedResponse = {
+        articles: [mockArticlesResponse.articles[1]],
+        articlesCount: 1,
+      };
+
+      mockArticlesService.listArticles.mockResolvedValue(favoritedResponse);
+
+      const query = { favorited: true };
+      const result = await controller.listArticles(query);
+
+      expect(result).toEqual(favoritedResponse);
+      expect(mockArticlesService.listArticles).toHaveBeenCalledWith(query);
+      expect(result.articles[0].favorited).toBe(true);
+    });
+
+    it('should return non-favorited articles when favorited=false', async () => {
+      const nonFavoritedResponse = {
+        articles: [mockArticlesResponse.articles[0]],
+        articlesCount: 1,
+      };
+
+      mockArticlesService.listArticles.mockResolvedValue(nonFavoritedResponse);
+
+      const query = { favorited: false };
+      const result = await controller.listArticles(query);
+
+      expect(result).toEqual(nonFavoritedResponse);
+      expect(mockArticlesService.listArticles).toHaveBeenCalledWith(query);
+      expect(result.articles[0].favorited).toBe(false);
+    });
+
+    it('should return articles with multiple filters combined', async () => {
+      const combinedFilterResponse = {
+        articles: [mockArticlesResponse.articles[1]],
+        articlesCount: 1,
+      };
+
+      mockArticlesService.listArticles.mockResolvedValue(
+        combinedFilterResponse,
+      );
+
+      const query = {
+        tag: 'react',
+        author: 'author2',
+        favorited: true,
+        limit: 10,
+        offset: 0,
+      };
+      const result = await controller.listArticles(query);
+
+      expect(result).toEqual(combinedFilterResponse);
+      expect(mockArticlesService.listArticles).toHaveBeenCalledWith(query);
+      expect(result.articles[0].tagList).toContain('react');
+      expect(result.articles[0].author.username).toBe('author2');
+      expect(result.articles[0].favorited).toBe(true);
+    });
+
+    it('should return empty list when no articles match filters', async () => {
+      const emptyResponse = {
+        articles: [],
+        articlesCount: 0,
+      };
+
+      mockArticlesService.listArticles.mockResolvedValue(emptyResponse);
+
+      const query = { tag: 'nonexistent' };
+      const result = await controller.listArticles(query);
+
+      expect(result).toEqual(emptyResponse);
+      expect(mockArticlesService.listArticles).toHaveBeenCalledWith(query);
+      expect(result.articles).toHaveLength(0);
+      expect(result.articlesCount).toBe(0);
     });
   });
 });
