@@ -1,9 +1,24 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { DetailArticleResponseDto } from './dto/detail-response.dto';
+import { LimitOffsetQueryDto } from './dto/limit-offset-query.dto';
 
 @Controller('articles')
 export class ArticlesController {
@@ -20,6 +35,23 @@ export class ArticlesController {
     @CurrentUser('id') userId: number,
   ) {
     return await this.articlesService.create(createArticleDto, userId);
+  }
+
+  @Get('feed')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get articles feed' })
+  @ApiResponse({ status: 200, description: 'Feed retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getFeed(
+    @CurrentUser('id') currentUserId: number,
+    @Query() query: LimitOffsetQueryDto,
+  ): Promise<{ articles: DetailArticleResponseDto[]; articlesCount: number }> {
+    return this.articlesService.getFeed(
+      currentUserId,
+      query.limit,
+      query.offset,
+    );
   }
 
   @Get(':slug')

@@ -1,11 +1,4 @@
-import { MAX } from 'class-validator';
-import {
-  Entity,
-  Column,
-  Unique,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Entity, Column, Unique, OneToMany } from 'typeorm';
 import { VALIDATION } from '../user.constant';
 import { BaseEntity } from '../../shared/base.entity';
 import { Follow } from '../../follows/entities/follows.entity';

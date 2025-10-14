@@ -11,6 +11,7 @@ describe('ArticlesController', () => {
   const mockArticlesService = {
     create: jest.fn(),
     getArticleBySlug: jest.fn(),
+    getFeed: jest.fn(),
   };
 
   const mockFollowRepository = {
@@ -128,6 +129,104 @@ describe('ArticlesController', () => {
       expect(mockArticlesService.getArticleBySlug).toHaveBeenCalledWith(
         slug,
         userId,
+      );
+    });
+  });
+
+  describe('getFeed', () => {
+    const currentUserId = 1;
+    const mockDate = new Date('2023-01-01T00:00:00.000Z');
+
+    it('should return articles feed with default pagination', async () => {
+      const feedResponse = {
+        articles: [
+          {
+            slug: 'article-1',
+            title: 'Article 1',
+            description: 'Description 1',
+            body: 'Body 1',
+            tagList: ['tag1'],
+            createdAt: mockDate,
+            updatedAt: mockDate,
+            favorited: false,
+            favoritesCount: 0,
+            author: {
+              username: 'author1',
+              bio: 'Bio 1',
+              image: 'image1.jpg',
+              following: true,
+            },
+          },
+        ],
+        articlesCount: 1,
+      };
+
+      mockArticlesService.getFeed.mockResolvedValue(feedResponse);
+
+      const query = { limit: undefined, offset: undefined };
+      const result = await controller.getFeed(currentUserId, query);
+
+      expect(result).toEqual(feedResponse);
+      expect(mockArticlesService.getFeed).toHaveBeenCalledWith(
+        currentUserId,
+        undefined,
+        undefined,
+      );
+    });
+
+    it('should return articles feed with custom pagination', async () => {
+      const feedResponse = {
+        articles: [
+          {
+            slug: 'article-3',
+            title: 'Article 3',
+            description: 'Description 3',
+            body: 'Body 3',
+            tagList: ['tag3'],
+            createdAt: new Date('2023-01-01T00:00:00.000Z'),
+            updatedAt: new Date('2023-01-01T00:00:00.000Z'),
+            favorited: true,
+            favoritesCount: 10,
+            author: {
+              username: 'author3',
+              bio: 'Bio 3',
+              image: 'image3.jpg',
+              following: true,
+            },
+          },
+        ],
+        articlesCount: 1,
+      };
+
+      mockArticlesService.getFeed.mockResolvedValue(feedResponse);
+
+      const query = { limit: 10, offset: 5 };
+      const result = await controller.getFeed(currentUserId, query);
+
+      expect(result).toEqual(feedResponse);
+      expect(mockArticlesService.getFeed).toHaveBeenCalledWith(
+        currentUserId,
+        query.limit,
+        query.offset,
+      );
+    });
+
+    it('should return empty feed when user follows no one', async () => {
+      const emptyFeedResponse = {
+        articles: [],
+        articlesCount: 0,
+      };
+
+      mockArticlesService.getFeed.mockResolvedValue(emptyFeedResponse);
+
+      const query = { limit: undefined, offset: undefined };
+      const result = await controller.getFeed(currentUserId, query);
+
+      expect(result).toEqual(emptyFeedResponse);
+      expect(mockArticlesService.getFeed).toHaveBeenCalledWith(
+        currentUserId,
+        undefined,
+        undefined,
       );
     });
   });
