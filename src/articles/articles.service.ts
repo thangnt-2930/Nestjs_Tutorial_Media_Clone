@@ -167,4 +167,20 @@ export class ArticlesService {
   ): void {
     qb.andWhere('article.favorited = :favorited', { favorited });
   }
+
+  async deleteArticleBySlug(slug: string, currentUserId: number) {
+    const article = await this.articleRepository.findOne({
+      where: {
+        slug,
+        author: { id: currentUserId },
+      },
+    });
+
+    if (!article) {
+      throw new NotFoundException(this.i18n.t('error.not_found'));
+    }
+
+    await this.articleRepository.remove(article);
+    return this.i18n.t('article.deleted');
+  }
 }

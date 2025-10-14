@@ -11,5 +11,6 @@
 		"body_min": "Nội dung phải có ít nhất {value} ký tự",
 		"body_max": "Nội dung phải có nhiều nhất {value} ký tự",
 		"tagList_required": "Danh sách thẻ là bắt buộc"
-	}
+	},
+	"deleted": "Xóa bài viết thành công"
 }
