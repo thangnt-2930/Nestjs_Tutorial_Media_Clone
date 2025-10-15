@@ -11,5 +11,6 @@
 		"body_min": "Body must be at least {value} characters",
 		"body_max": "Body must be at most {value} characters",
 		"tagList_required": "Tag list is required"
-	}
+	},
+	"deleted": "Article deleted successfully"
 }

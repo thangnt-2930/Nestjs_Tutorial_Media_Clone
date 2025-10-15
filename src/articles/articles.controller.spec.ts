@@ -13,6 +13,7 @@ describe('ArticlesController', () => {
     getArticleBySlug: jest.fn(),
     getFeed: jest.fn(),
     listArticles: jest.fn(),
+    deleteArticleBySlug: jest.fn(),
   };
 
   const mockFollowRepository = {
@@ -408,6 +409,38 @@ describe('ArticlesController', () => {
       expect(mockArticlesService.listArticles).toHaveBeenCalledWith(query);
       expect(result.articles).toHaveLength(0);
       expect(result.articlesCount).toBe(0);
+    });
+  });
+
+  describe('deleteArticle', () => {
+    const slug = 'test-article-slug';
+    const currentUserId = 1;
+    const successMessage = 'Article deleted successfully';
+
+    it('should delete article successfully when user is the author', async () => {
+      mockArticlesService.deleteArticleBySlug.mockResolvedValue(successMessage);
+
+      const result = await controller.deleteArticle(slug, currentUserId);
+
+      expect(result).toBe(successMessage);
+      expect(mockArticlesService.deleteArticleBySlug).toHaveBeenCalledWith(
+        slug,
+        currentUserId,
+      );
+      expect(mockArticlesService.deleteArticleBySlug).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw NotFoundException when article does not exist', async () => {
+      const notFoundError = new NotFoundException('Article not found');
+      mockArticlesService.deleteArticleBySlug.mockRejectedValue(notFoundError);
+
+      await expect(
+        controller.deleteArticle(slug, currentUserId),
+      ).rejects.toThrow(NotFoundException);
+      expect(mockArticlesService.deleteArticleBySlug).toHaveBeenCalledWith(
+        slug,
+        currentUserId,
+      );
     });
   });
 });

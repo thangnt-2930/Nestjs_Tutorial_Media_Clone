@@ -4,5 +4,6 @@
   "not_follow_yourself": "You cannot follow yourself",
   "already_following": "You already follow {name}",
   "not_unfollow_yourself": "You cannot unfollow yourself",
-  "not_following": "You are not following {name}"
+  "not_following": "You are not following {name}",
+  "forbidden": "You do not have permission to perform this action"
 }

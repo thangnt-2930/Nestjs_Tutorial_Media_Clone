@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -69,5 +70,20 @@ export class ArticlesController {
     @CurrentUser('id') userId: number,
   ) {
     return await this.articlesService.getArticleBySlug(slug, userId);
+  }
+
+  @Delete(':slug')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete article by slug' })
+  @ApiResponse({ status: 200, description: 'Article deleted successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - not the author' })
+  @ApiResponse({ status: 404, description: 'Article not found' })
+  async deleteArticle(
+    @Param('slug') slug: string,
+    @CurrentUser('id') currentUserId: number,
+  ) {
+    return this.articlesService.deleteArticleBySlug(slug, currentUserId);
   }
 }

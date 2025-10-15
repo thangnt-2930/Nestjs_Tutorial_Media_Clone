@@ -4,5 +4,6 @@
   "not_follow_yourself": "Bạn không thể theo dõi chính mình",
   "already_following": "Bạn đã theo dõi {name}",
   "not_unfollow_yourself": "Bạn không thể bỏ theo dõi chính mình",
-  "not_following": "Bạn không theo dõi {name}"
+  "not_following": "Bạn không theo dõi {name}",
+  "forbidden": "Bạn không có quyền thực hiện hành động này"
 }
