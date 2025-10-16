@@ -1,7 +1,15 @@
-import { Entity, Column, Unique, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  Unique,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 import { BaseEntity } from '../../shared/base.entity';
 import { User } from '../../users/entities/user.entity';
 import { VALIDATION } from '../articles.constant';
+import { Comment } from '../../comments/entities/comment.entity';
 
 @Entity('articles')
 @Unique(['slug'])
@@ -33,4 +41,7 @@ export class Article extends BaseEntity {
   @ManyToOne(() => User, (user) => user.articles, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'author_id' })
   author: User;
+
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments: Comment[];
 }
