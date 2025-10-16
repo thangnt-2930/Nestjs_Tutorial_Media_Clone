@@ -1,0 +1,9 @@
+{
+  "created": "Bình luận đã được tạo thành công",
+  "validation": {
+    "body": {
+      "min": "Nội dung phải có ít nhất {value} ký tự",
+      "max": "Nội dung phải có nhiều nhất {value} ký tự"
+    }
+  }
+}

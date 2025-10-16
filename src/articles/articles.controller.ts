@@ -11,12 +11,7 @@ import {
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { DetailArticleResponseDto } from './dto/detail-response.dto';
 import { LimitOffsetQueryDto } from './dto/limit-offset-query.dto';
@@ -78,7 +73,6 @@ export class ArticlesController {
   @ApiOperation({ summary: 'Delete article by slug' })
   @ApiResponse({ status: 200, description: 'Article deleted successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden - not the author' })
   @ApiResponse({ status: 404, description: 'Article not found' })
   async deleteArticle(
     @Param('slug') slug: string,

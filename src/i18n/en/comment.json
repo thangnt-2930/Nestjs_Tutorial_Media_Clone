@@ -1,0 +1,9 @@
+{
+  "created": "Comment created successfully",
+  "validation": {
+    "body": {
+      "min": "Body must be at least {value} characters",
+      "max": "Body must be at most {value} characters"
+    }
+  }
+}

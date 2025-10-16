@@ -3,6 +3,7 @@ import { VALIDATION } from '../user.constant';
 import { BaseEntity } from '../../shared/base.entity';
 import { Follow } from '../../follows/entities/follows.entity';
 import { Article } from '../../articles/entities/article.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 
 @Entity('users')
 @Unique(['email', 'name'])
@@ -30,4 +31,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Article, (article) => article.author)
   articles: Article[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments: Comment[];
 }

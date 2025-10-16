@@ -28,7 +28,7 @@ export class ArticlesService {
   async create(createArticleDto: CreateArticleDto, authorId: number) {
     let slug = slugify(createArticleDto.title, { lower: true, strict: true });
 
-    const existing = await this.articleRepository.findOne({ where: { slug } });
+    const existing = await this.loadArticle(slug);
     if (existing) {
       const randomSuffix = Math.floor(Math.random() * 10000);
       slug = `${slug}-${randomSuffix}`;
@@ -182,5 +182,13 @@ export class ArticlesService {
 
     await this.articleRepository.remove(article);
     return this.i18n.t('article.deleted');
+  }
+
+  async loadArticle(slug: string): Promise<Article> {
+    const article = await this.articleRepository.findOne({ where: { slug } });
+    if (!article) {
+      throw new NotFoundException(this.i18n.t('error.not_found'));
+    }
+    return article;
   }
 }
