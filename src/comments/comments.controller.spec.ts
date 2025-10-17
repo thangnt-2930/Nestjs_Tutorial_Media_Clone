@@ -3,6 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import { CommentsController } from './comments.controller';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create.dto';
+import { ListCommentsResponseDto } from './dto/list-response.dto';
 
 describe('CommentsController', () => {
   let controller: CommentsController;
@@ -10,6 +11,7 @@ describe('CommentsController', () => {
 
   const mockCommentsService = {
     create: jest.fn(),
+    findAll: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -115,6 +117,112 @@ describe('CommentsController', () => {
         longCommentDto,
         userId,
       );
+    });
+  });
+
+  describe('findAll', () => {
+    const slug = 'test-article';
+
+    const mockCommentsResponse: ListCommentsResponseDto = {
+      comments: [
+        {
+          id: 1,
+          body: 'This is the first comment',
+          createdAt: new Date('2025-01-01T10:00:00Z'),
+          updatedAt: new Date('2025-01-01T10:00:00Z'),
+          author: {
+            username: 'user1',
+            bio: 'I am a developer',
+            image: 'https://example.com/avatar1.jpg',
+            following: false,
+          },
+        },
+        {
+          id: 2,
+          body: 'This is the second comment',
+          createdAt: new Date('2025-01-01T11:00:00Z'),
+          updatedAt: new Date('2025-01-01T11:00:00Z'),
+          author: {
+            username: 'user2',
+            bio: 'I love coding',
+            image: 'https://example.com/avatar2.jpg',
+            following: true,
+          },
+        },
+      ],
+    };
+
+    it('should get all comments for an article successfully', async () => {
+      mockCommentsService.findAll.mockResolvedValue(mockCommentsResponse);
+
+      const result = await controller.findAll(slug);
+
+      expect(result).toEqual(mockCommentsResponse);
+      expect(mockCommentsService.findAll).toHaveBeenCalledWith(slug);
+      expect(mockCommentsService.findAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return empty comments array when no comments exist', async () => {
+      const emptyResponse: ListCommentsResponseDto = {
+        comments: [],
+      };
+
+      mockCommentsService.findAll.mockResolvedValue(emptyResponse);
+
+      const result = await controller.findAll(slug);
+
+      expect(result).toEqual(emptyResponse);
+      expect(result.comments).toHaveLength(0);
+      expect(mockCommentsService.findAll).toHaveBeenCalledWith(slug);
+      expect(mockCommentsService.findAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle article not found error', async () => {
+      const errorMessage = 'Article not found';
+      mockCommentsService.findAll.mockRejectedValue(
+        new NotFoundException(errorMessage),
+      );
+
+      await expect(controller.findAll(slug)).rejects.toThrow(NotFoundException);
+      await expect(controller.findAll(slug)).rejects.toThrow(errorMessage);
+
+      expect(mockCommentsService.findAll).toHaveBeenCalledWith(slug);
+    });
+
+    it('should handle invalid slug parameter', async () => {
+      const invalidSlug = '';
+      const errorMessage = 'Invalid slug parameter';
+      mockCommentsService.findAll.mockRejectedValue(new Error(errorMessage));
+
+      await expect(controller.findAll(invalidSlug)).rejects.toThrow(
+        errorMessage,
+      );
+
+      expect(mockCommentsService.findAll).toHaveBeenCalledWith(invalidSlug);
+    });
+
+    it('should return comments with correct structure', async () => {
+      mockCommentsService.findAll.mockResolvedValue(mockCommentsResponse);
+
+      const result = await controller.findAll(slug);
+
+      expect(result).toHaveProperty('comments');
+      expect(Array.isArray(result.comments)).toBe(true);
+
+      if (result.comments.length > 0) {
+        const firstComment = result.comments[0];
+        expect(firstComment).toHaveProperty('id');
+        expect(firstComment).toHaveProperty('body');
+        expect(firstComment).toHaveProperty('createdAt');
+        expect(firstComment).toHaveProperty('updatedAt');
+        expect(firstComment).toHaveProperty('author');
+        expect(firstComment.author).toHaveProperty('username');
+        expect(firstComment.author).toHaveProperty('bio');
+        expect(firstComment.author).toHaveProperty('image');
+        expect(firstComment.author).toHaveProperty('following');
+      }
+
+      expect(mockCommentsService.findAll).toHaveBeenCalledWith(slug);
     });
   });
 });

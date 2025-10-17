@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -22,5 +22,13 @@ export class CommentsController {
     @CurrentUser('id') currentUserId: number,
   ) {
     return this.commentsService.create(slug, createCommentDto, currentUserId);
+  }
+
+  @Get('articles/:slug/comments')
+  @ApiOperation({ summary: 'Get comments from article' })
+  @ApiResponse({ status: 200, description: 'Comments retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Article not found' })
+  async findAll(@Param('slug') slug: string) {
+    return this.commentsService.findAll(slug);
   }
 }
