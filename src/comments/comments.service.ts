@@ -7,6 +7,7 @@ import { User } from '../users/entities/user.entity';
 import { Comment } from './entities/comment.entity';
 import { CreateCommentDto } from './dto/create.dto';
 import { ArticlesService } from '../articles/articles.service';
+import { ListCommentsResponseDto } from './dto/list-response.dto';
 
 @Injectable()
 export class CommentsService {
@@ -34,5 +35,17 @@ export class CommentsService {
 
     await this.commentRepository.save(comment);
     return this.i18n.t('comment.created');
+  }
+
+  async findAll(slug: string): Promise<ListCommentsResponseDto> {
+    const article = await this.articleService.loadArticle(slug);
+
+    const comments = await this.commentRepository.find({
+      where: { article: { id: article.id } },
+      relations: ['author'],
+      order: { createdAt: 'DESC' },
+    });
+
+    return new ListCommentsResponseDto(comments);
   }
 }
