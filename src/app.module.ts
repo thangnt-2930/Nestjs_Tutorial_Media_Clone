@@ -13,6 +13,7 @@ import { ProfilesModule } from './profiles/profiles.module';
 import { ArticlesModule } from './articles/articles.module';
 import { CommentsModule } from './comments/comments.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     ArticlesModule,
     CommentsModule,
     FavoritesModule,
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
