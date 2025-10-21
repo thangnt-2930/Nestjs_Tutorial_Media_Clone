@@ -48,4 +48,23 @@ export class CommentsService {
 
     return new ListCommentsResponseDto(comments);
   }
+
+  async delete(
+    slug: string,
+    id: number,
+    currentUserId: number,
+  ): Promise<string> {
+    const article = await this.articleService.loadArticle(slug);
+
+    const comment = await this.commentRepository.findOne({
+      where: { id, article: { id: article.id }, author: { id: currentUserId } },
+    });
+
+    if (!comment) {
+      throw new NotFoundException(await this.i18n.t('error.not_found'));
+    }
+
+    await this.commentRepository.remove(comment);
+    return this.i18n.t('comment.deleted');
+  }
 }

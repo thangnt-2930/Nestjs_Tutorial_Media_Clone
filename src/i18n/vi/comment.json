@@ -5,5 +5,6 @@
       "min": "Nội dung phải có ít nhất {value} ký tự",
       "max": "Nội dung phải có nhiều nhất {value} ký tự"
     }
-  }
+  },
+  "deleted": "Bình luận đã được xóa thành công"
 }
