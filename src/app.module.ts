@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { ArticlesModule } from './articles/articles.module';
 import { CommentsModule } from './comments/comments.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CommentsModule } from './comments/comments.module';
     ProfilesModule,
     ArticlesModule,
     CommentsModule,
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

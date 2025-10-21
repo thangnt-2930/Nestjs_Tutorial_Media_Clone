@@ -1,0 +1,6 @@
+{
+  "favorited": "Article favorited successfully",
+  "already_favorited": "Article is already favorited",
+  "not_favorited": "Article is not favorited yet",
+  "unfavorited": "Article unfavorited successfully"
+}
