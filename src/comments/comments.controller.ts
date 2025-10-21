@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -30,5 +38,20 @@ export class CommentsController {
   @ApiResponse({ status: 404, description: 'Article not found' })
   async findAll(@Param('slug') slug: string) {
     return this.commentsService.findAll(slug);
+  }
+
+  @Delete('articles/:slug/comments/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete comment from article' })
+  @ApiResponse({ status: 200, description: 'Comment deleted successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Article or Comment not found' })
+  async delete(
+    @Param('slug') slug: string,
+    @Param('id') id: number,
+    @CurrentUser('id') currentUserId: number,
+  ) {
+    return this.commentsService.delete(slug, id, currentUserId);
   }
 }
